@@ -55,11 +55,15 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build Docker image
+      - name: Build Docker image from application folder
         run: |
           docker build -t ${{ env.ECR_REPOSITORY }}:latest \
             -f ${{ env.APP_PATH }}/Dockerfile \
             ${{ env.APP_PATH }}
+
+      - name: Verify Docker image exists
+        run: |
+          docker images | grep ${{ env.ECR_REPOSITORY }}
 
       - name: Tag Docker image for ECR
         if: github.event_name != 'pull_request'
